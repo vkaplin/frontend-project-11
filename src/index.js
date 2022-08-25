@@ -1,4 +1,4 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
+import './scss/custom.scss';
 
 const app = () => {
     console.log('start');
