@@ -1,4 +1,6 @@
 make all --print-data-base --no-builtin-variables --no-builtin-rules --question
+make: *** No rule to make target 'all'.  Stop.
+
 # GNU Make 4.2.1
 # Built for x86_64-pc-linux-gnu
 # Copyright (C) 1988-2016 Free Software Foundation, Inc.
@@ -6,7 +8,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Thu Aug 25 12:53:18 2022
+# Make data base, printed on Thu Aug 25 21:28:23 2022
 
 # Variables
 
@@ -51,7 +53,7 @@ XDG_RUNTIME_DIR = /mnt/wslg/runtime-dir
 # environment
 ELECTRON_RUN_AS_NODE = 1
 # environment
-VSCODE_IPC_HOOK_CLI = /mnt/wslg/runtime-dir/vscode-ipc-d0f3a836-641b-4859-a8a5-5506198f8a2d.sock
+VSCODE_IPC_HOOK_CLI = /mnt/wslg/runtime-dir/vscode-ipc-e211f1ab-3aed-4fad-bdd4-6c738d892211.sock
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
 # environment
@@ -144,10 +146,8 @@ LANG = C
 TERM = xterm-256color
 # environment
 WSL_DISTRO_NAME = Ubuntu
-# environment
-MOTD_SHOWN = update-motd
 # variable set hash-table stats:
-# Load=68/1024=7%, Rehash=0, Collisions=4/93=4%
+# Load=67/1024=7%, Rehash=0, Collisions=4/92=4%
 
 # Pattern-specific Variable Values
 
@@ -155,9 +155,9 @@ MOTD_SHOWN = update-motd
 
 # Directories
 
-# . (device 2080, inode 71109): 12 files, no impossibilities.
+# . (device 2080, inode 71109): 17 files, no impossibilities.
 
-# 12 files, no impossibilities in 1 directories.
+# 17 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -216,14 +216,12 @@ lint: npx eslint .
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 20 / storage = 182 B / avg = 9 B
-# current buf: size = 8162 B / used = 182 B / count = 20 / avg = 9 B
+# strcache buffers: 1 (0) / strings = 25 / storage = 230 B / avg = 9 B
+# current buf: size = 8162 B / used = 230 B / count = 25 / avg = 9 B
 
-# strcache performance: lookups = 26 / hit rate = 23%
+# strcache performance: lookups = 31 / hit rate = 19%
 # hash-table stats:
-# Load=20/8192=0%, Rehash=0, Collisions=1/26=4%
-# Finished Make data base on Thu Aug 25 12:53:18 2022
+# Load=25/8192=0%, Rehash=0, Collisions=1/31=3%
+# Finished Make data base on Thu Aug 25 21:28:23 2022
 
  
-make: *** No rule to make target 'all'.  Stop.
-

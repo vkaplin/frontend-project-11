@@ -1,6 +1,6 @@
 var HtmlWabpackPlugin = require('html-webpack-plugin');
 module.exports = {
-    entry: './index.js',
+    entry: './src/index.js',
     output: {
         path: __dirname + '/',
         filename: 'bundle.js',
@@ -10,11 +10,15 @@ module.exports = {
             template: './src/template.html',
         })
     ],
+    devServer: {
+        port: 3000,
+        host: '0.0.0.0',
+    },
     module: {
         rules: [
             {
                 test: /\.css$/,
-                use:['styel-loader', 'css-loader'],
+                use:['style-loader', 'css-loader'],
             }
         ]
     },
