@@ -2,7 +2,7 @@
   "name": "@hexlet/code",
   "version": "1.0.0",
   "description": "RSS read",
-  "main": "index.js",
+  "main": "bundle.js",
   "scripts": {
     "build": "webpack --mode=development",
     "buildDev": "webpack-dev-server --mode development"
@@ -18,8 +18,12 @@
   },
   "homepage": "https://github.com/vkaplin/frontend-project-11#readme",
   "dependencies": {
+    "axios": "^0.27.2",
     "bootstrap": "^5.2.0",
-    "webpack": "^5.74.0"
+    "i18next": "^21.9.1",
+    "on-change": "^4.0.1",
+    "webpack": "^5.74.0",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.8",

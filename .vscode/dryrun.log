@@ -1,8 +1,5 @@
 make --dry-run --always-make --keep-going --print-directory
 make: Entering directory '/home/hawk/projects/frontend-project-11'
- 
-make: *** No rule to make target 'npx', needed by 'lint'.
-make: *** No rule to make target 'eslint', needed by 'lint'.
-
+npm ci
 make: Leaving directory '/home/hawk/projects/frontend-project-11'
  
