@@ -5,7 +5,9 @@ export default {
         error: {
           duplication: 'RSS уже существует',
           invalid: 'Ссылка должна быть валидным URL',
+          linkInvalid: 'Ресурс не содержит валидный RSS',
         },
+        success: 'RSS успешно загружен',
       },
       button: 'Добавить',
       header: 'RSS агрегатор',
@@ -14,5 +16,11 @@ export default {
       inputPlaceHolder: 'ссылка RSS',
       inputLabel: 'ссылка RSS',
     },
+    feeds:{
+      title: "Фиды",
+    },
+    posts: {
+      title: "Посты",
+    }
   },
 };

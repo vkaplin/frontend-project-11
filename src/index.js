@@ -7,41 +7,115 @@ import './scss/custom.scss';
 import ru from './locales/ru.js';
 import render from './render.js';
 
+const idGeneretor = () => {
 
+}
 const rssShema = object({
   url: string().url().required().nullable(),
 });
 
 const isRepeatUrl = (url, urls) => urls.indexOf(url) === -1 ? false : true;
 
-const checkUrl = async (checkState) => {
+const checkErrorUrl = async (checkState) => {
   const checkResult = await rssShema.isValidSync({ url: checkState.currentUrl });
-  const repeatUrl = isRepeatUrl(checkState.form.currentUrl, checkState.form.addedUrls);
+  const repeatUrl = isRepeatUrl(checkState.currentUrl, checkState.form.addedUrls);
   if (repeatUrl) {
-    checkState.form.valid = false;
-    checkState.form.error = 'form.message.error.duplication';
-    return false;
-  }
-  if (!checkResult) {
-    checkState.form.valid = checkResult;        
-    checkState.form.error = 'form.message.error.invalid';
-    return false;
+    return 'form.message.error.duplication';
   }
 
-  checkState.form.valid = true;
-  checkState.form.error = '';
-  checkState.form.processState = 'fetch';
-  return true;  
+  if (!checkResult) {
+    return 'form.message.error.invalid';
+  }
+
+  return null;  
 };
-const getRssData = async (state) => {
-  const url = `https://allorigins.hexlet.app/get?url=${encodeURIComponent(state.currentUrl)}`;
-  console.log(url)
-  axios.get(url)
-    .then(response => {
-      if (response.ok) return response.json()
-      throw new Error('Network response was not ok.')
+
+const parseHTML = (html) => {
+  const parser = new DOMParser();
+  const parsedData = parser.parseFromString(html, 'text/xml');
+  const channal = parsedData.querySelector('channel');
+  const channalTitle = channal.querySelector('title');
+  const channalDescription = channal.querySelector('description');
+  const channalItems = channal.querySelectorAll('item');
+  const jsonData = {
+    title: channalTitle.textContent,
+    description: channalDescription.textContent,
+    items: Array.from(channalItems).map(item => {
+      const itemTitle = item.querySelector('title');
+      const itemDescription = item.querySelector('description');
+      const itemGuid = item.querySelector('guid');
+      const itemLink = item.querySelector('link');
+      const itemPubDate = item.querySelector('pubDate');
+      return {
+        title: itemTitle.textContent,
+        description: itemDescription.textContent,
+        guid: itemGuid.textContent,
+        link: itemLink.textContent,
+        pubDate: itemPubDate.textContent ? new Date(itemPubDate.textContent) : null,
+        read: false,
+      };
     })
-    .then(result => console.log(result))
+  };
+
+  return jsonData;
+};
+
+const fetchRssData = async (url) => {
+  const uri = `https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`;
+  return  axios.get(uri)
+        .then(response => response.data)
+        .then(result => parseHTML(result.contents))
+        .catch(err => {
+          throw new Error(err)
+        }); 
+};
+
+const updatePosts = (state) => {
+  const date = new Date();
+  setTimeout(() => {
+    const { feeds } = state;
+    feeds.map(async (feed) => {
+      const chanalData = await fetchRssData(feed.url);
+      const { items } = chanalData; 
+      if (items) {
+        const newItems = items.filter((item) => item.pubData > date);
+        state.posts = [...newItems, ...state.posts ];
+      }
+    })
+    updatePosts(state);
+  }, 5000); 
+};
+
+const addNewRssChanal = async (state) => {
+ try {
+    const chanalData = await fetchRssData(state.currentUrl);
+    console.log(chanalData)
+    
+    state.form.processState = 'idle';
+    if (chanalData) {
+      const { title, description, items } = chanalData;
+
+      state.feeds.unshift({
+        title,
+        description,
+        url: state.currentUrl,
+      });
+      
+      state.posts = [ ...items, ...state.posts ];
+      state.form.addedUrls.push(state.currentUrl);
+      state.form.feedback = { type: 'success', text: 'form.message.success' };      
+    }
+  
+    if (!chanalData) {
+      state.form.feedback = { type: 'error', text: 'form.message.error.linkInvalid' };
+      return null;
+    }
+
+  } catch{
+    state.form.processState = 'idle';
+    state.form.feedback = { type: 'error', text: 'form.message.error.linkInvalid' };
+    return null;
+  }
 };
 
 const getDomElements = () => {
@@ -66,11 +140,15 @@ const app = (i18nextInstance) => {
   const state = onChange({
       form: {
           currentUrl:'',
-          processState: 'filling',
-          error: '',
+          processState: 'idle',
+          feedback: '',
+          feedbackType: '',
           addedUrls: [],
           valid: true,
-      },      
+      },
+      timerStarted: false,
+      posts: [],
+      feeds: [],  
       lng: '',
   }, render (elements, i18nextInstance));
   state.lng = 'ru';
@@ -82,10 +160,22 @@ const app = (i18nextInstance) => {
 
   form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const urlValid = await checkUrl(state);
-      if (urlValid) {
-        getRssData(state);
-      } 
+      const errorUrl = await checkErrorUrl(state);
+      if (errorUrl) {
+        state.form.valid = false;
+        state.form.feedback = { type: 'error', text: errorUrl };
+        return;
+      }
+
+      state.form.valid = true;
+      state.form.feedback = '';
+      state.form.processState = 'fetch';
+      addNewRssChanal(state);
+      
+      if ( !state.timerStarted) {        
+        updatePosts(state);
+        state.timerStarted = true;
+      }
   });
 };
 
