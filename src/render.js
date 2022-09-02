@@ -1,16 +1,7 @@
-import { lazy } from "yup";
-
-const renderInputError = (input, valid) => {
-  if (valid) {
-    input.classList.remove('is-invalid');
-  }
-  if (!valid) {
-    input.classList.add('is-invalid');
-  }
-};
+import { Toast, Popover } from 'bootstrap';
 
 const renderFeeds = (feedsContainer, title, items) => {
-  console.log(items )
+  feedsContainer.innerHTML = "";
   const divCard = createDivCard(title);
   const ul = window.document.createElement('ul');
   ul.classList.add('list-group', 'border-0', 'rounded-0');
@@ -27,7 +18,7 @@ const renderFeeds = (feedsContainer, title, items) => {
     li.append(h3, p);
     ul.append(li);
   });
-  
+
   divCard.append(ul);
   feedsContainer.append(divCard);
 };
@@ -61,9 +52,9 @@ const renderFeedback = (feedback, type, text) => {
   }
   feedback.textContent = text;
 };
-const renderPosts = (postsContainer, title, items) => {
+const renderPosts = (postsContainer, i18inI, items) => {
   postsContainer.innerHTML = "";
-  const divCard = createDivCard(title);
+  const divCard = createDivCard(i18inI.t('posts.title'));
   const ul = window.document.createElement('ul');
   ul.classList.add('list-group', 'border-0', 'rounded-0');
 
@@ -73,13 +64,17 @@ const renderPosts = (postsContainer, title, items) => {
 
     const a = window.document.createElement('a');
     a.setAttribute('href', el.link);
-    a.classList.add('fw-bold');
+    a.classList.add(el.read === true ? 'fw-normal' : 'fw-bold');
     a.setAttribute('target', '_blank');
-    a.textContent = el.title;  
+    a.textContent = el.title;
 
     const btn = window.document.createElement('button');
     btn.classList.add('btn', 'btn-outline-primary', 'btn-sm');
-    btn.textContent = 'Просмотр';
+    btn.dataset.bsToggle = 'modal';
+    btn.dataset.bsTarget = '#rssPostModal';
+    btn.textContent = i18inI.t('posts.btnShow');
+    btn.dataset.id = el.id;
+
     li.append(a, btn);
     ul.append(li);
   })
@@ -89,14 +84,16 @@ const renderPosts = (postsContainer, title, items) => {
 };
 
 const renderForm = (elements, i18nI, value) => {
-  const { btn, header, subHeader, input, exemple, inputLabel} = elements;
+  const { btn, header, subHeader, input, exemple, inputLabel, modalBtnClose, modalBtnRead } = elements;
   i18nI.changeLanguage(value, () =>{
     btn.textContent = i18nI.t('form.button');
     header.textContent = i18nI.t('form.header');
     subHeader.textContent = i18nI.t('form.subHeader');
-    input.setAttribute('placeholder', i18nI.t('form.inputPlaceholder'));
+    input.setAttribute('placeholder', i18nI.t('form.inputPlaceHolder'));
     inputLabel.textContent = i18nI.t('form.inputLabel');
-    exemple.textContent = i18nI.t('form.exemple')
+    exemple.textContent = i18nI.t('form.exemple');
+    modalBtnClose.textContent = i18nI.t('posts.modal.btnClose');
+    modalBtnRead.textContent = i18nI.t('posts.modal.btnRead');
   });  
 };
 
@@ -120,7 +117,7 @@ const render = (elements, i18nextInstance) => (path, value, prevValue) => {
     case 'feeds':
       renderFeeds(feeds, i18nextInstance.t('feeds.title'), value);
     case 'posts':
-      renderPosts(posts, i18nextInstance.t('posts.title'), value);
+      renderPosts(posts, i18nextInstance, value);
     default:
       break;
   }

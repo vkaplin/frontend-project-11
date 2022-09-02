@@ -17,10 +17,15 @@ export default {
       inputLabel: 'ссылка RSS',
     },
     feeds:{
-      title: "Фиды",
+      title: 'Фиды',
     },
     posts: {
-      title: "Посты",
+      title: 'Посты',
+      btnShow: 'Просмотр',
+      modal: {
+        btnClose: 'Закрыть',
+        btnRead: 'Читать полностью',
+      }
     }
   },
 };

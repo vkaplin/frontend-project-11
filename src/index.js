@@ -8,8 +8,12 @@ import ru from './locales/ru.js';
 import render from './render.js';
 
 const idGeneretor = () => {
-
+  let count = 0;
+  return () => count += 1;
 }
+const feedId = idGeneretor();
+const postId = idGeneretor();
+
 const rssShema = object({
   url: string().url().required().nullable(),
 });
@@ -43,16 +47,14 @@ const parseHTML = (html) => {
     items: Array.from(channalItems).map(item => {
       const itemTitle = item.querySelector('title');
       const itemDescription = item.querySelector('description');
-      const itemGuid = item.querySelector('guid');
       const itemLink = item.querySelector('link');
       const itemPubDate = item.querySelector('pubDate');
       return {
         title: itemTitle.textContent,
         description: itemDescription.textContent,
-        guid: itemGuid.textContent,
         link: itemLink.textContent,
         pubDate: itemPubDate.textContent ? new Date(itemPubDate.textContent) : null,
-        read: false,
+        read: false,      
       };
     })
   };
@@ -78,7 +80,12 @@ const updatePosts = (state) => {
       const chanalData = await fetchRssData(feed.url);
       const { items } = chanalData; 
       if (items) {
-        const newItems = items.filter((item) => item.pubData > date);
+        const newItems = items
+          .filter((item) => item.pubData > date)
+          .map((item) => {
+            item['id'] = postId();
+            return item;
+          });
         state.posts = [...newItems, ...state.posts ];
       }
     })
@@ -100,8 +107,11 @@ const addNewRssChanal = async (state) => {
         description,
         url: state.currentUrl,
       });
-      
-      state.posts = [ ...items, ...state.posts ];
+      const newItems = items.map((item) => {
+        item['id'] = postId();
+        return item;
+      });
+      state.posts = [ ...newItems, ...state.posts ];
       state.form.addedUrls.push(state.currentUrl);
       state.form.feedback = { type: 'success', text: 'form.message.success' };      
     }
@@ -123,20 +133,28 @@ const getDomElements = () => {
   const formContainer = form.closest('DIV');
   const input = form.querySelector('input#url-input');
   const inputLabel = input.closest('DIV').querySelector('label');
-  const btn = form.querySelector('button[type="submit"]');  
-  const feedback = formContainer.querySelector('p.feedback');
-  const header = formContainer.querySelector('h1');
-  const subHeader = formContainer.querySelector('p.lead'); 
-  const exemple = formContainer.querySelector('p.text-muted');
-  const feeds = window.document.querySelector('.feeds');
-  const posts = window.document.querySelector('.posts');
-
-  return { input, btn, form, feedback, header, subHeader, inputLabel, exemple, feeds, posts };
+  const modal = window.document.querySelector('.modal');
+  return {
+    form,
+    input,
+    inputLabel,
+    btn: form.querySelector('button[type="submit"]'),    
+    feedback: formContainer.querySelector('p.feedback'),
+    header: formContainer.querySelector('h1'),
+    subHeader: formContainer.querySelector('p.lead'),
+    exemple: formContainer.querySelector('p.text-muted'),
+    feeds: window.document.querySelector('.feeds'),
+    posts: window.document.querySelector('.posts'),
+    modal,
+    modalTitle: modal.querySelector('.modal-title'),
+    modalBtnClose: modal.querySelector('.btn-secondary'),
+    modalBtnRead: modal.querySelector('.btn-primary'),
+  };
 };
 
 const app = (i18nextInstance) => {
   const elements = getDomElements();
-  const { input, form } = elements;
+  const { input, form, modal, modalBtnRead } = elements;
   const state = onChange({
       form: {
           currentUrl:'',
@@ -176,6 +194,20 @@ const app = (i18nextInstance) => {
         updatePosts(state);
         state.timerStarted = true;
       }
+  });
+
+  modal.addEventListener('show.bs.modal', (e) =>{
+    const btn = e.relatedTarget;
+    const postId = btn.getAttribute('data-id');
+    const post = state.posts.filter((post) => post.id.toString() === postId)[0];
+    if (post) {
+      const modalTitle = modal.querySelector('.modal-title');
+      const modalBody = modal.querySelector('.modal-body');
+      modalBtnRead.setAttribute('href', post.link)
+      modalTitle.textContent = post.title;
+      modalBody.textContent = post.description;
+      post.read = true;
+    }
   });
 };
 
