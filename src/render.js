@@ -1,5 +1,3 @@
-import { Toast, Popover } from 'bootstrap';
-
 const createDivCard = (title) => {
   const divCard = window.document.createElement('DIV');
   divCard.classList.add('card', 'border-0');

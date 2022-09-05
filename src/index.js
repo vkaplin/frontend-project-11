@@ -2,6 +2,7 @@ import { object, string } from 'yup';
 import onChange from 'on-change';
 import i18next from 'i18next';
 import axios from 'axios';
+import { Toast } from 'bootstrap';
 import './scss/custom.scss';
 
 import ru from './locales/ru.js';
