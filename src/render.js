@@ -97,6 +97,8 @@ const renderForm = (elements, i18nI, value) => {
 };
 
 const render = (elements, i18nextInstance) => (path, value, prevValue) => {
+  console.log(path, value)
+  debugger
   const { feedback, input, btn, feeds, posts } = elements;  
   switch (path) {
     case 'lng':
