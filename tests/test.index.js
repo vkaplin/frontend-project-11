@@ -30,11 +30,11 @@ test('test app', async ({page}) => {
 
   await input.fill('https://www.nasa.gov/rss/dyn/educationnews.rss');
   await btnSubmit.click();
-  pause();
+  await btnSubmit.click();
   expect(await feedback.evaluate(node => node.textContent)).toEqual('RSS успешно загружен');
   expect(await input.evaluate(node => node.value)).toEqual('');
   
   const btnView = page.locator('button[data-bs-toggle="modal"]');
   console.log(await feedback.evaluate(node => node.innerText))
-  console.log(await btnView[0].evaluate(node => node.innerText))
+  //console.log(await btnView[0].evaluate(node => node.innerText))
 });
