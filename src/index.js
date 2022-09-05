@@ -185,10 +185,10 @@ const app = (i18nextInstance) => {
         state.form.feedback = { type: 'error', text: errorUrl };
         return;
       }
-
-      state.form.valid = true;
-      state.form.feedback = '';
       state.form.processState = 'fetch';
+      state.form.feedback = { type: 'empty', text: '' };     
+      state.form.valid = true;
+          
       addNewRssChanal(state);
       
       if ( !state.timerStarted) {        
