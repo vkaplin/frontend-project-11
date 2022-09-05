@@ -121,7 +121,7 @@ const addNewRssChanal = async (state) => {
       return null;
     }
 
-  } catch{
+  } catch {
     state.form.processState = 'idle';
     state.form.feedback = { type: 'error', text: 'form.message.error.linkInvalid' };
     return null;
@@ -177,6 +177,7 @@ const app = (i18nextInstance) => {
   });
 
   form.addEventListener('submit', async (e) => {
+    console.log('submit');
       e.preventDefault();
       const errorUrl = await checkErrorUrl(state);
       if (errorUrl) {
@@ -200,6 +201,7 @@ const app = (i18nextInstance) => {
     const btn = e.relatedTarget;
     const postId = btn.getAttribute('data-id');
     const post = state.posts.filter((post) => post.id.toString() === postId)[0];
+
     if (post) {
       const modalTitle = modal.querySelector('.modal-title');
       const modalBody = modal.querySelector('.modal-body');
@@ -207,6 +209,7 @@ const app = (i18nextInstance) => {
       modalTitle.textContent = post.title;
       modalBody.textContent = post.description;
       post.read = true;
+      state.posts = [...state.posts];
     }
   });
 };

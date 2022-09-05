@@ -1,12 +1,27 @@
 import { Toast, Popover } from 'bootstrap';
 
+const createDivCard = (title) => {
+  const divCard = window.document.createElement('DIV');
+  divCard.classList.add('card', 'border-0');
+
+  const divCardBody = window.document.createElement('DIV');
+  divCardBody.classList.add('card-body');
+
+  const h2Title = window.document.createElement('H2');
+  h2Title.classList.add('card-title', 'h4');
+  h2Title.textContent = title;
+  divCardBody.append(h2Title);
+  divCard.append(divCardBody);
+  return divCard;
+};
+
 const renderFeeds = (feedsContainer, title, items) => {
-  feedsContainer.innerHTML = "";
+  feedsContainer.innerHTML = '';
   const divCard = createDivCard(title);
   const ul = window.document.createElement('ul');
   ul.classList.add('list-group', 'border-0', 'rounded-0');
 
-  items.map((el) => {
+  items.forEach((el) => {
     const li = window.document.createElement('li');
     li.classList.add('list-group-item', 'border-0', 'border-end-0');
     const h3 = window.document.createElement('h3');
@@ -23,21 +38,6 @@ const renderFeeds = (feedsContainer, title, items) => {
   feedsContainer.append(divCard);
 };
 
-const createDivCard = (title) => {
-  const divCard = window.document.createElement('DIV');
-  divCard.classList.add('card', 'border-0');
-
-  const divCardBody = window.document.createElement('DIV');
-  divCardBody.classList.add('card-body');
-
-  const h2Title = window.document.createElement('H2');
-  h2Title.classList.add('card-title', 'h4');  
-  h2Title.textContent = title;
-  divCardBody.append(h2Title);
-  divCard.append(divCardBody);
-  return divCard;
-};
-
 const renderFeedback = (feedback, type, text) => {
   switch (type) {
     case 'error':
@@ -52,13 +52,14 @@ const renderFeedback = (feedback, type, text) => {
   }
   feedback.textContent = text;
 };
+
 const renderPosts = (postsContainer, i18inI, items) => {
-  postsContainer.innerHTML = "";
+  postsContainer.innerHTML = '';
   const divCard = createDivCard(i18inI.t('posts.title'));
   const ul = window.document.createElement('ul');
   ul.classList.add('list-group', 'border-0', 'rounded-0');
 
-  items.map((el) => {
+  items.forEach((el) => {
     const li = window.document.createElement('li');
     li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
 
@@ -98,7 +99,7 @@ const renderForm = (elements, i18nI, value) => {
 };
 
 const render = (elements, i18nextInstance) => (path, value, prevValue) => {
-  console.log(path, value, prevValue);
+  console.log(path, value)
   const { feedback, input, btn, feeds, posts } = elements;  
   switch (path) {
     case 'lng':
@@ -116,8 +117,10 @@ const render = (elements, i18nextInstance) => (path, value, prevValue) => {
       break;
     case 'feeds':
       renderFeeds(feeds, i18nextInstance.t('feeds.title'), value);
+      break;
     case 'posts':
       renderPosts(posts, i18nextInstance, value);
+      break;
     default:
       break;
   }

@@ -16,7 +16,7 @@ export default {
       inputPlaceHolder: 'ссылка RSS',
       inputLabel: 'ссылка RSS',
     },
-    feeds:{
+    feeds: {
       title: 'Фиды',
     },
     posts: {
@@ -25,7 +25,7 @@ export default {
       modal: {
         btnClose: 'Закрыть',
         btnRead: 'Читать полностью',
-      }
-    }
+      },
+    },
   },
 };

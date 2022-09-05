@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Fri Sep  2 14:31:47 2022
+# Make data base, printed on Mon Sep  5 17:01:39 2022
 
 # Variables
 
@@ -31,7 +31,7 @@ CURDIR := /home/hawk/projects/frontend-project-11
 # makefile
 SHELL = /bin/sh
 # environment
-VSCODE_NLS_CONFIG = {"locale":"ru","availableLanguages":{"*":"ru"},"_languagePackId":"e2673fac9b3b0beb38d486c37331d2f9.ru","_translationsConfigFile":"/home/hawk/.vscode-server/data/clp/e2673fac9b3b0beb38d486c37331d2f9.ru/tcf.json","_cacheRoot":"/home/hawk/.vscode-server/data/clp/e2673fac9b3b0beb38d486c37331d2f9.ru","_resolvedLanguagePackCoreLocation":"/home/hawk/.vscode-server/data/clp/e2673fac9b3b0beb38d486c37331d2f9.ru/784b0177c56c607789f9638da7b6bf3230d47a8c","_corruptedFile":"/home/hawk/.vscode-server/data/clp/e2673fac9b3b0beb38d486c37331d2f9.ru/corrupted.info","_languagePackSupport":true}
+VSCODE_NLS_CONFIG = {"locale":"ru","availableLanguages":{"*":"ru"},"_languagePackId":"25fa6f3e61adfb2ba590c4cdbc3737bc.ru","_translationsConfigFile":"/home/hawk/.vscode-server/data/clp/25fa6f3e61adfb2ba590c4cdbc3737bc.ru/tcf.json","_cacheRoot":"/home/hawk/.vscode-server/data/clp/25fa6f3e61adfb2ba590c4cdbc3737bc.ru","_resolvedLanguagePackCoreLocation":"/home/hawk/.vscode-server/data/clp/25fa6f3e61adfb2ba590c4cdbc3737bc.ru/784b0177c56c607789f9638da7b6bf3230d47a8c","_corruptedFile":"/home/hawk/.vscode-server/data/clp/25fa6f3e61adfb2ba590c4cdbc3737bc.ru/corrupted.info","_languagePackSupport":true}
 # environment
 _ = /mnt/c/Users/hawk-/AppData/Local/Programs/Microsoft VS Code/bin/code
 # makefile (from 'Makefile', line 1)
@@ -53,7 +53,7 @@ XDG_RUNTIME_DIR = /mnt/wslg/runtime-dir
 # environment
 ELECTRON_RUN_AS_NODE = 1
 # environment
-VSCODE_IPC_HOOK_CLI = /mnt/wslg/runtime-dir/vscode-ipc-d60a90cf-1d72-4cfc-bfb2-c19594e61d60.sock
+VSCODE_IPC_HOOK_CLI = /mnt/wslg/runtime-dir/vscode-ipc-27ae6640-e331-436d-9fce-42e5708d7148.sock
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
 # environment
@@ -146,10 +146,8 @@ LANG = C
 TERM = xterm-256color
 # environment
 WSL_DISTRO_NAME = Ubuntu
-# environment
-MOTD_SHOWN = update-motd
 # variable set hash-table stats:
-# Load=68/1024=7%, Rehash=0, Collisions=4/93=4%
+# Load=67/1024=7%, Rehash=0, Collisions=4/92=4%
 
 # Pattern-specific Variable Values
 
@@ -157,9 +155,9 @@ MOTD_SHOWN = update-motd
 
 # Directories
 
-# . (device 2080, inode 71109): 17 files, no impossibilities.
+# . (device 2080, inode 71109): 18 files, no impossibilities.
 
-# 17 files, no impossibilities in 1 directories.
+# 18 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -184,7 +182,7 @@ all:
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-08-29 13:24:37.581253293
+#  Last modified 2022-09-05 12:31:46.099981214
 #  File has been updated.
 #  Successfully updated.
 
@@ -193,7 +191,7 @@ test:
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 7):
-		npm test
+		npx playwright test
 
 # Not a target:
 .DEFAULT:
@@ -223,12 +221,12 @@ install:
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 26 / storage = 244 B / avg = 9 B
-# current buf: size = 8162 B / used = 244 B / count = 26 / avg = 9 B
+# strcache buffers: 1 (0) / strings = 27 / storage = 250 B / avg = 9 B
+# current buf: size = 8162 B / used = 250 B / count = 27 / avg = 9 B
 
-# strcache performance: lookups = 34 / hit rate = 23%
+# strcache performance: lookups = 35 / hit rate = 22%
 # hash-table stats:
-# Load=26/8192=0%, Rehash=0, Collisions=1/34=3%
-# Finished Make data base on Fri Sep  2 14:31:47 2022
+# Load=27/8192=0%, Rehash=0, Collisions=1/35=3%
+# Finished Make data base on Mon Sep  5 17:01:39 2022
 
  
