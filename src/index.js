@@ -97,7 +97,6 @@ const updatePosts = (state) => {
 const addNewRssChanal = async (state) => {
  try {
     const chanalData = await fetchRssData(state.currentUrl);
-    console.log(chanalData)
     
     state.form.processState = 'idle';
     if (chanalData) {
@@ -178,7 +177,6 @@ const app = (i18nextInstance) => {
   });
 
   form.addEventListener('submit', async (e) => {
-    console.log('submit');
       e.preventDefault();
       const errorUrl = await checkErrorUrl(state);
       if (errorUrl) {
