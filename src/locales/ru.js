@@ -6,6 +6,7 @@ export default {
           duplication: 'RSS уже существует',
           invalid: 'Ссылка должна быть валидным URL',
           linkInvalid: 'Ресурс не содержит валидный RSS',
+          networkError: 'Ошибка сети',
         },
         success: 'RSS успешно загружен',
       },

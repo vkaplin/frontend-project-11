@@ -6,7 +6,7 @@ import { Toast } from 'bootstrap';
 import './scss/custom.scss';
 
 import ru from './locales/ru.js';
-import render from './render.js';
+import view from './view.js';
 
 const idGeneretor = () => {
   let count = 0;
@@ -123,7 +123,7 @@ const addNewRssChanal = async (state) => {
 
   } catch {
     state.form.processState = 'idle';
-    state.form.feedback = { type: 'error', text: 'form.message.error.linkInvalid' };
+    state.form.feedback = { type: 'error', text: 'form.message.error.networkError' };
     return null;
   }
 };
@@ -168,7 +168,7 @@ const app = (i18nextInstance) => {
       posts: [],
       feeds: [],  
       lng: '',
-  }, render (elements, i18nextInstance));
+  }, view (elements, i18nextInstance));
   state.lng = 'ru';
 
   input.addEventListener('input', async (e) => {
