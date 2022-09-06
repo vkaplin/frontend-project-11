@@ -177,7 +177,7 @@ const app = (i18nextInstance) => {
   });
 
   form.addEventListener('submit', async (e) => {
-      debugger
+     console.log('submit')
       e.preventDefault();
       const errorUrl = await checkErrorUrl(state);
       if (errorUrl) {

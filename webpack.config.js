@@ -1,8 +1,10 @@
+var path = require('path');
 var HtmlWabpackPlugin = require('html-webpack-plugin');
+
 module.exports = {
   entry: './src/index.js',
   output: {
-    path: __dirname + '/public/',
+    path: path.join(path.resolve(), '/public/'),
     filename: 'bundle.js',
   },
   plugins: [
