@@ -1,4 +1,4 @@
-import { createDivCard } from "./renderUtils.js";
+import { createDivCard } from './renderUtils.js';
 
 const renderPosts = (postsContainer, i18inI, items) => {
   postsContainer.innerHTML = '';
@@ -25,8 +25,8 @@ const renderPosts = (postsContainer, i18inI, items) => {
 
     li.append(a, btn);
     ul.append(li);
-  })
-  
+  });
+
   divCard.append(ul);
   postsContainer.append(divCard);
 };

@@ -1,6 +1,6 @@
-import renderFeeds from "./renderFeeds.js";
-import renderPosts from "./renderPosts.js";
-import renderForm from "./renderForm.js";
+import renderFeeds from './renderFeeds.js';
+import renderPosts from './renderPosts.js';
+import renderForm from './renderForm.js';
 
 const renderFeedback = (feedback, type, text) => {
   switch (type) {
@@ -17,9 +17,9 @@ const renderFeedback = (feedback, type, text) => {
   feedback.textContent = text;
 };
 
-const render = (elements, i18nextInstance) => (path, value, prevValue) => {
+const render = (elements, i18nextInstance) => (path, value) => {
   console.log(path, value)
-  const { feedback, input, btn, feeds, posts } = elements;  
+  const { feedback, input, btn, feeds, posts } = elements;
   switch (path) {
     case 'lng':
       renderForm(elements, i18nextInstance, value);

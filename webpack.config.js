@@ -1,5 +1,5 @@
-var path = require('path');
-var HtmlWabpackPlugin = require('html-webpack-plugin');
+let path = require('path');
+let HtmlWabpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   entry: './src/index.js',
@@ -35,11 +35,11 @@ module.exports = {
             postcssOptions: {
               plugins: function () {
                 return [
-                  require('autoprefixer')
+                  require('autoprefixer'),
                 ];
               },
             },
-          }
+          },
         }, {
           loader: 'sass-loader',
         }],
