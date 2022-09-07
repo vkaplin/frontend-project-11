@@ -69,6 +69,7 @@ const fetchRssData = async (url) => {
         .then(response => response.data)
         .then(result => parseHTML(result.contents))
         .catch(err => {
+          console.error('error fetch');
           throw new Error(err)
         }); 
 };
@@ -122,6 +123,7 @@ const addNewRssChanal = async (state) => {
     }
 
   } catch {
+    console.error('error add new cahnall');
     state.form.processState = 'idle';
     state.form.feedback = { type: 'error', text: 'form.message.error.networkError' };
     return null;
@@ -186,13 +188,11 @@ const app = (i18nextInstance) => {
         return;
       }
       addNewRssChanal(state);
-      
+
       state.form.processState = 'fetch';
       state.form.feedback = { type: 'empty', text: '' };     
       state.form.valid = true;
-          
-      
-      
+
       if ( !state.timerStarted) {        
         updatePosts(state);
         state.timerStarted = true;
