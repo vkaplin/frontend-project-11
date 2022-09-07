@@ -3,3 +3,22 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/601e67a0d6d75e20ff11/maintainability)](https://codeclimate.com/github/vkaplin/frontend-project-11/maintainability)
 
 [Link to demo](https://vkaplin-frontend-project-11.vercel.app/)
+
+
+###Installation:
+
+Clone the repository using the following command:
+```
+git clone https://github.com/vkaplin/frontend-project-11
+```
+Install RSS reader using the following commands:
+```
+make install
+npm link
+```
+###Compiling:
+
+Compile the package with webpack using:
+```
+make build
+```
