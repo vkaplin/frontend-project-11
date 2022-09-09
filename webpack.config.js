@@ -5,7 +5,7 @@ module.exports = {
   entry: './src/index.js',
   output: {
     path: path.join(path.resolve(), '/public/'),
-    filename: 'bundle.js',
+    filename: '[name].bundle.js',
   },
   plugins: [
     new HtmlWabpackPlugin({
@@ -45,5 +45,16 @@ module.exports = {
         }],
       },
     ],
+  },
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        commons: {
+            test: /[\\/]node_modules[\\/]/,
+            name: 'vendors',
+            chunks: 'all',
+        },
+      },
+    },
   },
 };

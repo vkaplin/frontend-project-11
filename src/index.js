@@ -1,8 +1,7 @@
 import { object, string } from 'yup';
 import onChange from 'on-change';
 import i18next from 'i18next';
-import axios from 'axios';
-import { Toast } from 'bootstrap';
+///import axios from 'axios';
 import './scss/custom.scss';
 
 import ru from './locales/ru.js';
@@ -64,6 +63,7 @@ const parseHTML = (html) => {
 };
 
 const fetchRssData = async (url) => {
+  const { default: axios } = await import('axios');
   const uri = `https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`;
   return  axios.get(uri)
         .then(response => response.data)

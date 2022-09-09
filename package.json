@@ -4,7 +4,7 @@
   "description": "RSS read",
   "main": "bundle.js",
   "scripts": {
-    "build": "webpack --mode=development",
+    "build": "webpack --mode=production",
     "buildDev": "webpack-dev-server --mode development"
   },
   "repository": {
