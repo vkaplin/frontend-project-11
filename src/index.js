@@ -89,7 +89,7 @@ const updatePosts = (state) => {
         const newItems = items
           .filter((item) => item.pubData > date)
           .map((item) => {
-            item['id'] = postIdGenerator();
+            item.id = postIdGenerator();
             return item;
           });
         state.posts = [...newItems, ...state.posts];
@@ -113,7 +113,7 @@ const addNewRssChanal = async (state) => {
         url: state.currentUrl,
       });
       const newItems = items.map((item) => {
-        item.id = postId();
+        item.id = postIdGenerator();
         return item;
       });
       state.posts = [...newItems, ...state.posts];
