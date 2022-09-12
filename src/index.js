@@ -1,7 +1,7 @@
 import { object, string } from 'yup';
 import onChange from 'on-change';
 import i18next from 'i18next';
-import { Modal } from 'bootstrap';
+import 'bootstrap';
 import './scss/custom.scss';
 
 import ru from './locales/ru.js';
@@ -10,9 +10,9 @@ import view from './view.js';
 const idGeneretor = () => {
   let count = 0;
   return () => count += 1;
-}
-const feedId = idGeneretor();
-const postId = idGeneretor();
+};
+
+const postIdGenerator = idGeneretor();
 
 const rssShema = object({
   url: string().url().required().nullable(),
@@ -70,11 +70,11 @@ const fetchRssData = async (url) => {
   const { default: axios } = await import('axios');
   const uri = `https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`;
   return  axios.get(uri)
-        .then(response => response.data)
-        .then(data => data.contents)
-        .catch(err => {
-          throw new Error('form.message.error.networkError')
-        }); 
+    .then(response => response.data)
+    .then(data => data.contents)
+    .catch(err => {
+      throw new Error('form.message.error.networkError')
+    }); 
 };
 
 const updatePosts = (state) => {
@@ -89,10 +89,10 @@ const updatePosts = (state) => {
         const newItems = items
           .filter((item) => item.pubData > date)
           .map((item) => {
-            item['id'] = postId();
+            item['id'] = postIdGenerator();
             return item;
           });
-        state.posts = [...newItems, ...state.posts ];
+        state.posts = [...newItems, ...state.posts];
       }
     })
     updatePosts(state);
@@ -100,10 +100,9 @@ const updatePosts = (state) => {
 };
 
 const addNewRssChanal = async (state) => {
- try {
+  try {
     const rawChanalData = await fetchRssData(state.currentUrl);
     const chanalData = parseHTML(rawChanalData);
-    console.log(chanalData)
     state.form.processState = 'idle';
     if (chanalData) {
       const { title, description, items } = chanalData;
@@ -114,10 +113,10 @@ const addNewRssChanal = async (state) => {
         url: state.currentUrl,
       });
       const newItems = items.map((item) => {
-        item['id'] = postId();
+        item.id = postId();
         return item;
       });
-      state.posts = [ ...newItems, ...state.posts ];
+      state.posts = [...newItems, ...state.posts];
       state.form.addedUrls.push(state.currentUrl);
       state.form.feedback = { type: 'success', text: 'form.message.success' };      
     }
@@ -157,47 +156,47 @@ const app = (i18nextInstance) => {
   const elements = getDomElements();
   const { input, form, modal, modalBtnRead } = elements;
   const state = onChange({
-      form: {
-          currentUrl:'',
-          processState: 'idle',
-          feedback: '',
-          feedbackType: '',
-          addedUrls: [],
-          valid: true,
-      },
-      timerStarted: false,
-      posts: [],
-      feeds: [],  
-      lng: '',
+    form: {
+      currentUrl:'',
+      processState: 'idle',
+      feedback: '',
+      feedbackType: '',
+      addedUrls: [],
+      valid: true,
+    },
+    timerStarted: false,
+    posts: [],
+    feeds: [],  
+    lng: '',
   }, view (elements, i18nextInstance));
   state.lng = 'ru';
 
   input.addEventListener('input', async (e) => {
-      const url = e.target.value;       
-      state.currentUrl = url;      
+    const url = e.target.value;
+    state.currentUrl = url;
   });
 
   form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const errorUrl = await checkErrorUrl(state);
-      if (errorUrl) {
-        state.form.valid = false;
-        state.form.feedback = { type: 'error', text: errorUrl };
-        return;
-      }
-      addNewRssChanal(state);
+    e.preventDefault();
+    const errorUrl = await checkErrorUrl(state);
+    if (errorUrl) {
+      state.form.valid = false;
+      state.form.feedback = { type: 'error', text: errorUrl };
+      return;
+    }
+    addNewRssChanal(state);
 
-      state.form.processState = 'fetch';
-      state.form.feedback = { type: 'empty', text: '' };     
-      state.form.valid = true;
+    state.form.processState = 'fetch';
+    state.form.feedback = { type: 'empty', text: '' };     
+    state.form.valid = true;
 
-      if ( !state.timerStarted) {        
-        updatePosts(state);
-        state.timerStarted = true;
-      }
+    if ( !state.timerStarted) {        
+      updatePosts(state);
+      state.timerStarted = true;
+    }
   });
 
-  modal.addEventListener('show.bs.modal', (e) =>{
+  modal.addEventListener('show.bs.modal', (e) => {
     const btn = e.relatedTarget;
     const postId = btn.getAttribute('data-id');
     const post = state.posts.filter((post) => post.id.toString() === postId)[0];
@@ -217,10 +216,10 @@ const app = (i18nextInstance) => {
 const runApp = async () => {
   const i18nextInstance = i18next.createInstance();
   await i18nextInstance.init({
-      debug: true,
-      resources: {
-          ru,
-      }
+    debug: true,
+    resources: {
+        ru,
+    }
   });
 
   app(i18nextInstance);

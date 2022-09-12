@@ -1,21 +1,20 @@
-plugins:
-  - jest
-
 env:
-  node: true  
-  jest: true
+  es2021: true
+  node: true
   browser: true
 
 extends:
-  - 'airbnb-base'
-  - 'plugin:jest/recommended'
+  - airbnb-base
 
 parserOptions:
-  ecmaVerdion: latest
+  ecmaVersion: latest
+  sourceType: module
 
 rules:
-  no-console: 0 
-  import/extensions: # FIXME: remove when rule will be adjusted for new nodejs version
+  no-console: 0
+
+  import/extensions:
     - error
     - ignorePackages
     - js: always
+  no-restricted-syntax: ["error", "FunctionExpression", "WithStatement"]

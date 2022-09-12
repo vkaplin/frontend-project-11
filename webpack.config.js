@@ -1,3 +1,5 @@
+/* eslint-disable no-underscore-dangle */
+
 let path = require('path');
 let HtmlWabpackPlugin = require('html-webpack-plugin');
 

@@ -1,4 +1,4 @@
-import createDivCard  from "./createDivCard.js";
+import createDivCard from './createDivCard.js';
 
 const renderFeeds = (feedsContainer, title, items) => {
   feedsContainer.innerHTML = '';
