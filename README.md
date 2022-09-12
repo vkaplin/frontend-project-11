@@ -4,7 +4,8 @@
 
 [Demo](https://vkaplin-frontend-project-11.vercel.app/)
 
-
+## RSS reader
+Rss reader is used to read and agreggate data from RSS feeds, such as news and blogs. Add any number of RSS feeds, the app will update them automatically and include new posts into the list.
 
 ### Installation:
 
