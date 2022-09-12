@@ -2,6 +2,7 @@ let path = require('path');
 let HtmlWabpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
+  mode: 'production',
   entry: './src/index.js',
   output: {
     path: path.join(path.resolve(), '/public/'),
