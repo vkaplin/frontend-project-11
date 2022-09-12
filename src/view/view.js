@@ -26,14 +26,21 @@ const render = (elements, i18nextInstance) => (path, value) => {
       renderForm(elements, i18nextInstance, value);
       break;
     case 'form.valid':
-      value === true ? input.classList.remove('is-invalid') : input.classList.add('is-invalid');
+      if (value === true) {
+        input.classList.remove('is-invalid');
+      }
+      if (value !== true) {
+        input.classList.add('is-invalid');
+      }
       break;
     case 'form.feedback':
       renderFeedback(feedback, value.type, i18nextInstance.t(value.text));
       break;
     case 'form.processState':
-      btn.disabled = value === 'fetch' ? true : false;
-      value === 'idle' ? input.value = '' : null;
+      btn.disabled = value === 'fetch';
+      if (value === 'idle') {
+        input.value = '';
+      }
       break;
     case 'feeds':
       renderFeeds(feeds, i18nextInstance.t('feeds.title'), value);
