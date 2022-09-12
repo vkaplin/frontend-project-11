@@ -35,42 +35,46 @@ const checkErrorUrl = async (checkState) => {
 };
 
 const parseHTML = (html) => {
-  const parser = new DOMParser();
-  const parsedData = parser.parseFromString(html, 'text/xml');
-  const channal = parsedData.querySelector('channel');
-  const channalTitle = channal.querySelector('title');
-  const channalDescription = channal.querySelector('description');
-  const channalItems = channal.querySelectorAll('item');
-  const jsonData = {
-    title: channalTitle.textContent,
-    description: channalDescription.textContent,
-    items: Array.from(channalItems).map(item => {
-      const itemTitle = item.querySelector('title');
-      const itemDescription = item.querySelector('description');
-      const itemLink = item.querySelector('link');
-      const itemPubDate = item.querySelector('pubDate');
-      return {
-        title: itemTitle.textContent,
-        description: itemDescription.textContent,
-        link: itemLink.textContent,
-        pubDate: itemPubDate.textContent ? new Date(itemPubDate.textContent) : null,
-        read: false,      
-      };
-    })
-  };
+  try {
+    const parser = new DOMParser();
+    const parsedData = parser.parseFromString(html, 'text/xml');
+    const channal = parsedData.querySelector('channel');
+    const channalTitle = channal.querySelector('title');
+    const channalDescription = channal.querySelector('description');
+    const channalItems = channal.querySelectorAll('item');
+    const jsonData = {
+      title: channalTitle.textContent,
+      description: channalDescription.textContent,
+      items: Array.from(channalItems).map(item => {
+        const itemTitle = item.querySelector('title');
+        const itemDescription = item.querySelector('description');
+        const itemLink = item.querySelector('link');
+        const itemPubDate = item.querySelector('pubDate');
+        return {
+          title: itemTitle.textContent,
+          description: itemDescription.textContent,
+          link: itemLink.textContent,
+          pubDate: itemPubDate.textContent ? new Date(itemPubDate.textContent) : null,
+          read: false,      
+        };
+      })
+    };
 
-  return jsonData;
+    return jsonData;
+  } catch {
+    throw new Error('form.message.error.linkInvalid');
+  }
 };
+
 
 const fetchRssData = async (url) => {
   const { default: axios } = await import('axios');
   const uri = `https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`;
   return  axios.get(uri)
         .then(response => response.data)
-        .then(result => parseHTML(result.contents))
+        .then(data => data.contents)
         .catch(err => {
-          console.error('error fetch');
-          throw new Error(err)
+          throw new Error('form.message.error.networkError')
         }); 
 };
 
@@ -79,7 +83,8 @@ const updatePosts = (state) => {
   setTimeout(() => {
     const { feeds } = state;
     feeds.map(async (feed) => {
-      const chanalData = await fetchRssData(feed.url);
+      const rawChanalData = await fetchRssData(feed.url);
+      const chanalData = parseHTML(rawChanalData);
       const { items } = chanalData; 
       if (items) {
         const newItems = items
@@ -97,8 +102,9 @@ const updatePosts = (state) => {
 
 const addNewRssChanal = async (state) => {
  try {
-    const chanalData = await fetchRssData(state.currentUrl);
-    
+    const rawChanalData = await fetchRssData(state.currentUrl);
+    const chanalData = parseHTML(rawChanalData);
+    console.log(chanalData)
     state.form.processState = 'idle';
     if (chanalData) {
       const { title, description, items } = chanalData;
@@ -116,16 +122,10 @@ const addNewRssChanal = async (state) => {
       state.form.addedUrls.push(state.currentUrl);
       state.form.feedback = { type: 'success', text: 'form.message.success' };      
     }
-  
-    if (!chanalData) {
-      state.form.feedback = { type: 'error', text: 'form.message.error.linkInvalid' };
-      return null;
-    }
-
-  } catch {
+  } catch (e) {
     console.error('error add new cahnall');
     state.form.processState = 'idle';
-    state.form.feedback = { type: 'error', text: 'form.message.error.networkError' };
+    state.form.feedback = { type: 'error', text: e.message };
     return null;
   }
 };
