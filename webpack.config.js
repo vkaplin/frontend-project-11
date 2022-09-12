@@ -2,11 +2,18 @@ let path = require('path');
 let HtmlWabpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  mode: 'production',
-  entry: './src/index.js',
+  mode: process.env.NODE_ENV || 'development',
+  entry: {
+    index: {
+      import: './src/index.js',
+      dependOn: 'shared',
+    },
+    shared: ['axios', 'bootstrap', 'i18next', 'on-change', 'yup'],
+  },
   output: {
     path: path.join(path.resolve(), '/public/'),
     filename: '[name].bundle.js',
+    clean: true,
   },
   plugins: [
     new HtmlWabpackPlugin({
@@ -47,15 +54,15 @@ module.exports = {
       },
     ],
   },
-  optimization: {
-    splitChunks: {
-      cacheGroups: {
-        commons: {
-            test: /[\\/]node_modules[\\/]/,
-            name: 'vendors',
-            chunks: 'all',
-        },
-      },
-    },
-  },
+  // optimization: {
+  //   splitChunks: {
+  //     cacheGroups: {
+  //       commons: {
+  //           test: /[\\/]node_modules[\\/]/,
+  //           name: 'vendors',
+  //           chunks: 'all',
+  //       },
+  //     },
+  //   },
+  // },
 };
