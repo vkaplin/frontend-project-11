@@ -21,7 +21,7 @@ const rssShema = object({
   url: string().url().required().nullable(),
 });
 
-const isRepeatUrl = (url, urls) => urls.indexOf(url) === -1;
+const isRepeatUrl = (url, urls) => urls.indexOf(url) !== -1;
 
 const checkErrorUrl = async (checkState) => {
   const checkResult = await rssShema.isValidSync({ url: checkState.currentUrl });
