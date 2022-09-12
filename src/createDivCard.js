@@ -13,6 +13,4 @@ const createDivCard = (title) => {
   return divCard;
 };
 
-export {
-  createDivCard,
-}
+export default createDivCard;

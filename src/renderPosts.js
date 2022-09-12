@@ -1,8 +1,6 @@
-//import { Modal } from 'bootstrap';
-import { createDivCard } from './renderUtils.js';
+import createDivCard from './createDivCard.js';
 
 const renderPosts = async (postsContainer, i18inI, items) => {
-  const { default: Modal } = await import('bootstrap');
   postsContainer.innerHTML = '';
   const divCard = createDivCard(i18inI.t('posts.title'));
   const ul = window.document.createElement('ul');

@@ -1,7 +1,7 @@
 import { object, string } from 'yup';
 import onChange from 'on-change';
 import i18next from 'i18next';
-///import axios from 'axios';
+import { Modal } from 'bootstrap';
 import './scss/custom.scss';
 
 import ru from './locales/ru.js';
@@ -61,11 +61,10 @@ const parseHTML = (html) => {
     };
 
     return jsonData;
-  } catch {
+  } catch (e) {
     throw new Error('form.message.error.linkInvalid');
   }
 };
-
 
 const fetchRssData = async (url) => {
   const { default: axios } = await import('axios');
@@ -179,7 +178,6 @@ const app = (i18nextInstance) => {
   });
 
   form.addEventListener('submit', async (e) => {
-     console.log('submit')
       e.preventDefault();
       const errorUrl = await checkErrorUrl(state);
       if (errorUrl) {
