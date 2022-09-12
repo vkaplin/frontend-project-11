@@ -1,7 +1,5 @@
-/* eslint-disable no-underscore-dangle */
-
-let path = require('path');
-let HtmlWabpackPlugin = require('html-webpack-plugin');
+const path = require('path');
+const HtmlWabpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   mode: process.env.NODE_ENV || 'development',
@@ -33,38 +31,6 @@ module.exports = {
         test: /\.css$/,
         use: ['style-loader', 'css-loader'],
       },
-      {
-        test: /\.(scss)$/,
-        use: [{
-          loader: 'style-loader',
-        }, {
-          loader: 'css-loader',
-        }, {
-          loader: 'postcss-loader',
-          options: {
-            postcssOptions: {
-              plugins: function () {
-                return [
-                  require('autoprefixer'),
-                ];
-              },
-            },
-          },
-        }, {
-          loader: 'sass-loader',
-        }],
-      },
     ],
   },
-  // optimization: {
-  //   splitChunks: {
-  //     cacheGroups: {
-  //       commons: {
-  //           test: /[\\/]node_modules[\\/]/,
-  //           name: 'vendors',
-  //           chunks: 'all',
-  //       },
-  //     },
-  //   },
-  // },
 };

@@ -18,7 +18,9 @@ const renderFeedback = (feedback, type, text) => {
 };
 
 const render = (elements, i18nextInstance) => (path, value) => {
-  const { feedback, input, btn, feeds, posts } = elements;
+  const {
+    feedback, input, btn, feeds, posts,
+  } = elements;
   switch (path) {
     case 'lng':
       renderForm(elements, i18nextInstance, value);
