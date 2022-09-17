@@ -23,7 +23,7 @@ const fetchRssData = async (url) => {
   const uri = `https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`;
   console.log(uri)
   console.log(proxyUrl);
-  return axios.get(uri)
+  return axios.get(proxyUrl)
     .then((response) => response.data)
     .then((data) => data.contents)
     .catch(() => {
