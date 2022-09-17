@@ -12,7 +12,7 @@ import validate from './utils/validate.js';
 const getproxyUrl = (rssUrl) => {
   const proxyUrl = 'https://allorigins.hexlet.app/get';
   const url = new URL(proxyUrl);
-  url.searchParams.set('disableCashe', true);
+  url.searchParams.set('disableCache', true);
   url.searchParams.set('url', rssUrl);
   return url.toString();
 };
@@ -20,9 +20,6 @@ const getproxyUrl = (rssUrl) => {
 const fetchRssData = async (url) => {
   const { default: axios } = await import('axios');
   const proxyUrl = getproxyUrl(url);
-  const uri = `https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`;
-  console.log(uri)
-  console.log(proxyUrl);
   return axios.get(proxyUrl)
     .then((response) => response.data)
     .then((data) => data.contents)
