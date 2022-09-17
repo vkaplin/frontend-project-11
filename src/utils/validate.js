@@ -21,5 +21,4 @@ const validate = (state) => {
   });
   return rssShema.validate({ url: currentUrl }); 
 };
-
 export default validate;
