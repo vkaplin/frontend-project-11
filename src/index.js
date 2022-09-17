@@ -12,8 +12,8 @@ import validate from './utils/validate.js';
 const getproxyUrl = (rssUrl) => {
   const proxyUrl = 'https://allorigins.hexlet.app/get';
   const url = new URL(proxyUrl);
-  url.searchParams.set('url', rssUrl);
   url.searchParams.set('disableCashe', true);
+  url.searchParams.set('url', rssUrl);
   return url.toString();
 };
 
