@@ -20,6 +20,7 @@ const getproxyUrl = (rssUrl) => {
 const fetchRssData = async (url) => {
   const { default: axios } = await import('axios');
   const proxyUrl = getproxyUrl(url);
+  console.log(proxyUrl);
   return axios.get(proxyUrl)
     .then((response) => response.data)
     .then((data) => data.contents)
