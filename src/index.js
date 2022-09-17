@@ -1,78 +1,26 @@
-import { object, string } from 'yup';
 import onChange from 'on-change';
 import i18next from 'i18next';
+import { v4 as uuidv4 } from 'uuid';
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import ru from './locales/ru.js';
 import view from './view/view.js';
+import parseHTML from './parser.js';
+import validate from './utils/validate.js';
 
-const idGeneretor = () => {
-  let count = 0;
-  return () => {
-    count += 1;
-    return count;
-  };
-};
-
-const postIdGenerator = idGeneretor();
-
-const rssShema = object({
-  url: string().url().required().nullable(),
-});
-
-const isRepeatUrl = (url, urls) => urls.indexOf(url) !== -1;
-
-const checkErrorUrl = async (checkState) => {
-  const checkResult = await rssShema.isValidSync({ url: checkState.currentUrl });
-  const repeatUrl = isRepeatUrl(checkState.currentUrl, checkState.form.addedUrls);
-  if (repeatUrl) {
-    return 'form.message.error.duplication';
-  }
-
-  if (!checkResult) {
-    return 'form.message.error.invalid';
-  }
-
-  return null;
-};
-
-const parseHTML = (html) => {
-  try {
-    const parser = new DOMParser();
-    const parsedData = parser.parseFromString(html, 'text/xml');
-    const channal = parsedData.querySelector('channel');
-    const channalTitle = channal.querySelector('title');
-    const channalDescription = channal.querySelector('description');
-    const channalItems = channal.querySelectorAll('item');
-    const jsonData = {
-      title: channalTitle.textContent,
-      description: channalDescription.textContent,
-      items: Array.from(channalItems).map((item) => {
-        const itemTitle = item.querySelector('title');
-        const itemDescription = item.querySelector('description');
-        const itemLink = item.querySelector('link');
-        const itemPubDate = item.querySelector('pubDate');
-        return {
-          title: itemTitle.textContent,
-          description: itemDescription.textContent,
-          link: itemLink.textContent,
-          pubDate: itemPubDate.textContent ? new Date(itemPubDate.textContent) : null,
-          read: false,
-        };
-      }),
-    };
-
-    return jsonData;
-  } catch (e) {
-    throw new Error('form.message.error.linkInvalid');
-  }
+const getproxyUrl = (rssUrl) => {
+  const proxyUrl = 'https://allorigins.hexlet.app/get';
+  const url = new URL(proxyUrl);
+  url.searchParams.set('url', rssUrl);
+  url.searchParams.set('disableCashe', true);
+  return url.toString();
 };
 
 const fetchRssData = async (url) => {
   const { default: axios } = await import('axios');
-  const uri = `https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`;
-  return axios.get(uri)
+  const proxyUrl = getproxyUrl(url);
+  return axios.get(proxyUrl)
     .then((response) => response.data)
     .then((data) => data.contents)
     .catch(() => {
@@ -92,7 +40,7 @@ const updatePosts = (state) => {
         const newItems = items
           .filter((item) => item.pubData > date)
           .map((item) => {
-            item.id = postIdGenerator();
+            item.id = uuidv4();
             return item;
           });
         state.posts = [...newItems, ...state.posts];
@@ -104,7 +52,7 @@ const updatePosts = (state) => {
 
 const addNewRssChanal = async (state) => {
   try {
-    const rawChanalData = await fetchRssData(state.currentUrl);
+    const rawChanalData = await fetchRssData(state.form.currentUrl);
     const chanalData = parseHTML(rawChanalData);
     state.form.processState = 'idle';
     if (chanalData) {
@@ -113,10 +61,10 @@ const addNewRssChanal = async (state) => {
       state.feeds.unshift({
         title,
         description,
-        url: state.currentUrl,
+        url: state.form.currentUrl,
       });
       const newItems = items.map((item) => {
-        item.id = postIdGenerator();
+        item.id = uuidv4();
         return item;
       });
       state.posts = [...newItems, ...state.posts];
@@ -157,7 +105,7 @@ const getDomElements = () => {
 const app = (i18nextInstance) => {
   const elements = getDomElements();
   const {
-    input, form, modal, modalBtnRead,
+    input, form, modal,
   } = elements;
   const state = onChange({
     form: {
@@ -171,32 +119,30 @@ const app = (i18nextInstance) => {
     timerStarted: false,
     posts: [],
     feeds: [],
+    modal: null,
     lng: '',
   }, view(elements, i18nextInstance));
   state.lng = 'ru';
 
-  input.addEventListener('input', async (e) => {
-    const url = e.target.value;
-    state.currentUrl = url;
-  });
-
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const errorUrl = await checkErrorUrl(state);
-    if (errorUrl) {
+    const inputValue = input.value;
+    state.form.currentUrl = inputValue;
+    try {
+      await validate(state);
+      addNewRssChanal(state);
+
+      state.form.processState = 'fetch';
+      state.form.feedback = { type: 'empty', text: '' };
+      state.form.valid = true;
+
+      if (!state.timerStarted) {
+        updatePosts(state);
+        state.timerStarted = true;
+      }
+    } catch (err) {
       state.form.valid = false;
-      state.form.feedback = { type: 'error', text: errorUrl };
-      return;
-    }
-    addNewRssChanal(state);
-
-    state.form.processState = 'fetch';
-    state.form.feedback = { type: 'empty', text: '' };
-    state.form.valid = true;
-
-    if (!state.timerStarted) {
-      updatePosts(state);
-      state.timerStarted = true;
+      state.form.feedback = { type: 'error', text: err.message };
     }
   });
 
@@ -206,11 +152,7 @@ const app = (i18nextInstance) => {
     const currentPost = state.posts.filter((post) => post.id.toString() === postId)[0];
 
     if (currentPost) {
-      const modalTitle = modal.querySelector('.modal-title');
-      const modalBody = modal.querySelector('.modal-body');
-      modalBtnRead.setAttribute('href', currentPost.link);
-      modalTitle.textContent = currentPost.title;
-      modalBody.textContent = currentPost.description;
+      state.modal = currentPost;
       currentPost.read = true;
       state.posts = [...state.posts];
     }

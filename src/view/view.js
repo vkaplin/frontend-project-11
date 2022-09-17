@@ -1,6 +1,7 @@
 import renderFeeds from './renderFeeds.js';
 import renderPosts from './renderPosts.js';
 import renderForm from './renderForm.js';
+import renderModal from './renderModal.js';
 
 const renderFeedback = (feedback, type, text) => {
   switch (type) {
@@ -19,7 +20,7 @@ const renderFeedback = (feedback, type, text) => {
 
 const render = (elements, i18nextInstance) => (path, value) => {
   const {
-    feedback, input, btn, feeds, posts,
+    feedback, input, btn, feeds, posts, modal, modalBtnRead,
   } = elements;
   switch (path) {
     case 'lng':
@@ -48,6 +49,8 @@ const render = (elements, i18nextInstance) => (path, value) => {
     case 'posts':
       renderPosts(posts, i18nextInstance, value);
       break;
+    case 'modal':
+      renderModal(modal, modalBtnRead, value);
     default:
       break;
   }
