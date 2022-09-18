@@ -1,5 +1,4 @@
 import { object, string, setLocale } from 'yup';
-import i18next from 'i18next';
 
 const validate = (state) => {
   setLocale({
@@ -19,6 +18,8 @@ const validate = (state) => {
       .required()
       .notOneOf(feeds.map(({ url }) => url)),
   });
-  return rssShema.validate({ url: currentUrl }); 
+
+  return rssShema.validate({ url: currentUrl });
 };
+
 export default validate;
