@@ -51,6 +51,7 @@ const render = (elements, i18nextInstance) => (path, value) => {
       break;
     case 'modal':
       renderModal(modal, modalBtnRead, value);
+      break;
     default:
       break;
   }
