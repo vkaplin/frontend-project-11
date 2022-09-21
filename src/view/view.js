@@ -1,6 +1,5 @@
 import renderFeeds from './renderFeeds.js';
 import renderPosts from './renderPosts.js';
-import renderForm from './renderForm.js';
 import renderModal from './renderModal.js';
 
 const renderFeedback = (feedback, type, text) => {
@@ -22,10 +21,8 @@ const render = (elements, i18nextInstance) => (path, value) => {
   const {
     feedback, input, btn, feeds, posts, modal, modalBtnRead,
   } = elements;
+
   switch (path) {
-    case 'lng':
-      renderForm(elements, i18nextInstance, value);
-      break;
     case 'form.valid':
       if (value === true) {
         input.classList.remove('is-invalid');

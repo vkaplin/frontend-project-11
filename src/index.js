@@ -8,6 +8,7 @@ import ru from './locales/ru.js';
 import view from './view/view.js';
 import parseHTML from './parser.js';
 import validate from './utils/validate.js';
+import renderForm from './view/renderForm.js';
 
 const getproxyUrl = (rssUrl) => {
   const proxyUrl = 'https://allorigins.hexlet.app/get';
@@ -32,47 +33,47 @@ const updatePosts = (state) => {
   const date = new Date();
   setTimeout(() => {
     const { feeds } = state;
-    feeds.map(async (feed) => {
-      const rawChanalData = await fetchRssData(feed.url);
-      const chanalData = parseHTML(rawChanalData);
-      const { items } = chanalData;
-      if (items) {
-        const newItems = items
-          .filter((item) => item.pubData > date)
-          .map((item) => {
-            item.id = uuidv4();
-            return item;
-          });
-        state.posts = [...newItems, ...state.posts];
-      }
-    });
-    updatePosts(state);
+    const promises = feeds.map((feed) => fetchRssData(feed.url));
+    Promise.all(promises)
+      .then((results) => {
+        results.forEach((rawChannelData) => {
+          const channelData = parseHTML(rawChannelData);
+          const { items } = channelData;
+          if (items) {
+            const newItems = items
+              .filter((item) => item.pubData > date)
+              .map((item) => {
+                item.id = uuidv4();
+                return item;
+              });
+            state.posts = [...newItems, ...state.posts];
+          }
+        });
+      })
+      .finally(() => updatePosts(state));
   }, 5000);
 };
 
-const addNewRssChanal = async (state) => {
+const addNewRssChannel = async (state) => {
   try {
-    const rawChanalData = await fetchRssData(state.form.currentUrl);
-    const chanalData = parseHTML(rawChanalData);
+    const rawChannelData = await fetchRssData(state.form.currentUrl);
+    const channelData = parseHTML(rawChannelData);
     state.form.processState = 'idle';
-    if (chanalData) {
-      const { title, description, items } = chanalData;
-
-      state.feeds.unshift({
-        title,
-        description,
-        url: state.form.currentUrl,
-      });
-      const newItems = items.map((item) => {
-        item.id = uuidv4();
-        return item;
-      });
-      state.posts = [...newItems, ...state.posts];
-      state.form.addedUrls.push(state.currentUrl);
-      state.form.feedback = { type: 'success', text: 'form.message.success' };
-    }
+    const { title, description, items } = channelData;
+    state.feeds.unshift({
+      title,
+      description,
+      url: state.form.currentUrl,
+    });
+    const newItems = items.map((item) => {
+      item.id = uuidv4();
+      return item;
+    });
+    state.posts = [...newItems, ...state.posts];
+    state.form.addedUrls.push(state.currentUrl);
+    state.form.feedback = { type: 'success', text: 'form.message.success' };
   } catch (e) {
-    console.error('error add new cahnall');
+    console.error('error add new channel');
     state.form.processState = 'idle';
     state.form.feedback = { type: 'error', text: e.message };
   }
@@ -107,6 +108,9 @@ const app = (i18nextInstance) => {
   const {
     input, form, modal,
   } = elements;
+
+  renderForm(elements, i18nextInstance);
+
   const state = onChange({
     form: {
       currentUrl: '',
@@ -116,13 +120,10 @@ const app = (i18nextInstance) => {
       addedUrls: [],
       valid: true,
     },
-    timerStarted: false,
     posts: [],
     feeds: [],
     modal: null,
-    lng: '',
   }, view(elements, i18nextInstance));
-  state.lng = 'ru';
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -130,16 +131,11 @@ const app = (i18nextInstance) => {
     state.form.currentUrl = inputValue;
     try {
       await validate(state);
-      addNewRssChanal(state);
+      addNewRssChannel(state);
 
       state.form.processState = 'fetch';
       state.form.feedback = { type: 'empty', text: '' };
       state.form.valid = true;
-
-      if (!state.timerStarted) {
-        updatePosts(state);
-        state.timerStarted = true;
-      }
     } catch (err) {
       state.form.valid = false;
       state.form.feedback = { type: 'error', text: err.message };
@@ -157,11 +153,14 @@ const app = (i18nextInstance) => {
       state.posts = [...state.posts];
     }
   });
+
+  updatePosts(state);
 };
 
 const runApp = async () => {
   const i18nextInstance = i18next.createInstance();
   await i18nextInstance.init({
+    lng: 'ru',
     debug: true,
     resources: {
       ru,
