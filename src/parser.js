@@ -21,8 +21,7 @@ const parseHTML = (html) => {
         title: itemTitle.textContent,
         description: itemDescription.textContent,
         link: itemLink.textContent,
-        pubDate: itemPubDate.textContent ? new Date(itemPubDate.textContent) : null,
-        read: false,
+        itemPubDate: itemPubDate.textContent,
       };
     }),
   };

@@ -10,7 +10,7 @@ import parseHTML from './parser.js';
 import validate from './utils/validate.js';
 import renderForm from './view/renderForm.js';
 
-const getproxyUrl = (rssUrl) => {
+const getProxyUrl = (rssUrl) => {
   const proxyUrl = 'https://allorigins.hexlet.app/get';
   const url = new URL(proxyUrl);
   url.searchParams.set('disableCache', true);
@@ -20,7 +20,7 @@ const getproxyUrl = (rssUrl) => {
 
 const fetchRssData = async (url) => {
   const { default: axios } = await import('axios');
-  const proxyUrl = getproxyUrl(url);
+  const proxyUrl = getProxyUrl(url);
   return axios.get(proxyUrl)
     .then((response) => response.data)
     .then((data) => data.contents)
@@ -41,8 +41,13 @@ const updatePosts = (state) => {
           const { items } = channelData;
           if (items) {
             const newItems = items
+              .map((item) => {
+                item.pubData = item.itemPubDate ? new Date(item.itemPubDate) : null;
+                return item;
+              })
               .filter((item) => item.pubData > date)
               .map((item) => {
+                item.read = false;
                 item.id = uuidv4();
                 return item;
               });
@@ -67,6 +72,8 @@ const addNewRssChannel = async (state) => {
     });
     const newItems = items.map((item) => {
       item.id = uuidv4();
+      item.read = false;
+      item.pubData = item.itemPubDate ? new Date(item.itemPubDate) : null;
       return item;
     });
     state.posts = [...newItems, ...state.posts];
@@ -80,11 +87,11 @@ const addNewRssChannel = async (state) => {
 };
 
 const getDomElements = () => {
-  const form = window.document.querySelector('form.rss-form');
+  const form = document.querySelector('form.rss-form');
   const formContainer = form.closest('DIV');
   const input = form.querySelector('input#url-input');
   const inputLabel = input.closest('DIV').querySelector('label');
-  const modal = window.document.querySelector('.modal');
+  const modal = document.querySelector('.modal');
   return {
     form,
     input,
@@ -94,8 +101,8 @@ const getDomElements = () => {
     header: formContainer.querySelector('h1'),
     subHeader: formContainer.querySelector('p.lead'),
     exemple: formContainer.querySelector('p.text-muted'),
-    feeds: window.document.querySelector('.feeds'),
-    posts: window.document.querySelector('.posts'),
+    feeds: document.querySelector('.feeds'),
+    posts: document.querySelector('.posts'),
     modal,
     modalTitle: modal.querySelector('.modal-title'),
     modalBtnClose: modal.querySelector('.btn-secondary'),
